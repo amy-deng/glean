@@ -112,7 +112,7 @@ def get_sorted_r_t_graphs(t, r, r_hist, r_hist_t, graph_dict, word_graph_dict, r
     if torch.cuda.is_available():
         r_hist_len = r_hist_len.cuda()
     r_len, idx = r_hist_len.sort(0, descending=True)
-    num_non_zero = len(torch.nonzero(r_len))
+    num_non_zero = len(torch.nonzero(r_len,as_tuple=False))
     r_len_non_zero = r_len[:num_non_zero]
     idx_non_zero = idx[:num_non_zero]  
     idx_zero = idx[num_non_zero-1:]  

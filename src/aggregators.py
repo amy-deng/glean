@@ -56,7 +56,6 @@ class aggregator_actor(nn.Module):
     def forward(self, t, r, r_hist, r_hist_t, ent_embeds, rel_embeds, word_embeds, graph_dict, word_graph_dict, ent_map, rel_map):
         reverse = False
         batched_g, batched_wg, len_non_zero, r_ids_graph, idx, num_non_zero = get_sorted_r_t_graphs(t, r, r_hist, r_hist_t, graph_dict, word_graph_dict, reverse=False)
-        # print(batched_g,r_ids_graph,'batched_g')
         if batched_g: 
             r_sort = r[idx]
             batched_g.ndata['h'] = ent_embeds[batched_g.ndata['id']].view(-1, ent_embeds.shape[1]) 
@@ -321,9 +320,6 @@ class aggregator_event(nn.Module):
                 embeds = wg_node_embs.index_select(0, word_idx)
                 for i in gidx:
                     H_mx[i,range(len(word_idx)),:] = embeds
-                # embeds = wg_node_embs.index_select(0, word_idx).view(-1,self.h_dim)
-                # feature = torch.cat((embeds, torch.zeros(max_query - len(word_idx), self.h_dim)), dim=0)
-                # H_mx[gidx,:,:] = feature
             else:
                 H_mx[gidx,range(len(word_idx)),:] = wg_node_embs.index_select(0, word_idx)
         
@@ -333,10 +329,6 @@ class aggregator_event(nn.Module):
                 embeds = wg_node_embs.index_select(0, word_idx)
                 for i in gidx:
                     H_mx[i,range(len(word_idx)),:] = embeds
-            # if gidx.size(0) > 1:
-            #     embeds = wg_node_embs.index_select(0, word_idx).view(-1,self.h_dim)
-            #     feature = torch.cat((embeds, torch.zeros(max_query - len(word_idx), self.h_dim)), dim=0)
-            #     H_mx[gidx,:,:] = feature
             else:
                 H_mx[gidx,range(len(word_idx)),:] = wg_node_embs.index_select(0, word_idx)
         

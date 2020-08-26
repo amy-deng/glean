@@ -93,12 +93,12 @@ class glean_event(nn.Module):
             sorted_prob_rel = torch.where(sorted_prob_rel > self.threshold, sorted_prob_rel, torch.zeros(sorted_prob_rel.size()).cuda())
         else:
             sorted_prob_rel = torch.where(sorted_prob_rel > self.threshold, sorted_prob_rel, torch.zeros(sorted_prob_rel.size()))
-        nonzero_prob_idx = torch.nonzero(sorted_prob_rel).view(-1)
+        nonzero_prob_idx = torch.nonzero(sorted_prob_rel,as_tuple=False).view(-1)
         nonzero_prob_rel_idx = prob_rel_idx[:len(nonzero_prob_idx)]
 
         # target
         true_prob_r = true_prob_r.view(-1)  
-        nonzero_rel_idx = torch.nonzero(true_prob_r) # (x,1)->(x)
+        nonzero_rel_idx = torch.nonzero(true_prob_r,as_tuple=False) # (x,1)->(x)
         sorted_true_rel, true_rel_idx = true_prob_r.sort(0, descending=True)
         nonzero_true_rel_idx = true_rel_idx[:len(nonzero_rel_idx)]
         return nonzero_true_rel_idx, nonzero_prob_rel_idx, loss
@@ -205,12 +205,12 @@ class glean_actor(nn.Module):
         loss, sub_pred, ob_pred = self.predict(t_data, r_data, r_hist, r_hist_t, true_s, true_o)
         # s target
         true_prob_s = true_s.view(-1)  
-        nonzero_sub_idx = torch.nonzero(true_prob_s) # (x,1)->(x)
+        nonzero_sub_idx = torch.nonzero(true_prob_s,as_tuple=False) # (x,1)->(x)
         sort_true_sub, true_sub_idx = true_prob_s.sort(0, descending=True)
         nonzero_true_sub_idx = true_sub_idx[:len(nonzero_sub_idx)]
         # o target
         true_prob_o = true_o.view(-1)  
-        nonzero_ob_idx = torch.nonzero(true_prob_o) # (x,1)->(x)
+        nonzero_ob_idx = torch.nonzero(true_prob_o,as_tuple=False) # (x,1)->(x)
         sort_true_ob, true_ob_idx = true_prob_o.sort(0, descending=True)
         nonzero_true_ob_idx = true_ob_idx[:len(nonzero_ob_idx)]
 
@@ -220,7 +220,7 @@ class glean_actor(nn.Module):
             sort_prob_sub = torch.where(sort_prob_sub > self.threshold, sort_prob_sub, torch.zeros(sort_prob_sub.size()).cuda())
         else:
             sort_prob_sub = torch.where(sort_prob_sub > self.threshold, sort_prob_sub, torch.zeros(sort_prob_sub.size()))
-        nonzero_prob_idx = torch.nonzero(sort_prob_sub).view(-1)
+        nonzero_prob_idx = torch.nonzero(sort_prob_sub,as_tuple=False).view(-1)
         nonzero_prob_sub_idx = prob_sub_idx[:len(nonzero_prob_idx)]
 
         ranks = torch.LongTensor([])
@@ -237,7 +237,7 @@ class glean_actor(nn.Module):
             sort_prob_ob = torch.where(sort_prob_ob > self.threshold, sort_prob_ob, torch.zeros(sort_prob_ob.size()).cuda())
         else:
             sort_prob_ob = torch.where(sort_prob_ob > self.threshold, sort_prob_ob, torch.zeros(sort_prob_ob.size()))
-        nonzero_prob_idx = torch.nonzero(sort_prob_ob).view(-1)
+        nonzero_prob_idx = torch.nonzero(sort_prob_ob,as_tuple=False).view(-1)
         nonzero_prob_ob_idx = prob_ob_idx[:len(nonzero_prob_idx)]
 
         for ob_idx in nonzero_ob_idx:

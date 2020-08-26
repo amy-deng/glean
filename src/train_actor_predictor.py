@@ -38,8 +38,7 @@ parser.add_argument("--runs", type=int, default=5, help='number of runs')
 
 args = parser.parse_args()
 print(args)
-os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
-
+# os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
 use_cuda = args.gpu >= 0 and torch.cuda.is_available()
 print("cuda",use_cuda)
