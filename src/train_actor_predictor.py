@@ -142,7 +142,7 @@ while iterations < args.runs:
             total_ranks = np.concatenate((ranks.cpu().numpy(), total_ranks))
     
         print('{} results'.format(set_name)) 
-        hloss, recall, f1, f2 = utils.print_eval_metrics2(true_rank_l,prob_rank_l,prt=False)
+        hloss, recall, f1, f2 = utils.print_eval_metrics(true_rank_l,prob_rank_l,prt=False)
         hits, mrr, mr = utils.print_hit_eval_metrics(total_ranks)
         reduced_loss = total_loss / (dataset_loader.len / 1.0)
         print("{} Loss: {:.6f}".format(set_name, reduced_loss))

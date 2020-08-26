@@ -167,7 +167,7 @@ def soft_cross_entropy(pred, soft_targets):
 '''
 Generate/get (r,t,s_count, o_count) datasets 
 '''
-def get_scaled_tr_dataset(num_nodes, dataset='india', set_name='train', seq_len=10, num_r=None):
+def get_scaled_tr_dataset(num_nodes, dataset='india', set_name='train', seq_len=7, num_r=None):
     import pandas as pd
     from scipy import sparse
     file_path = '../data/{}/tr_data_{}_sl{}_rand_{}.npy'.format(dataset, set_name, seq_len, num_r)
@@ -184,7 +184,7 @@ def get_scaled_tr_dataset(num_nodes, dataset='india', set_name='train', seq_len=
     true_prob_o = torch.from_numpy(true_prob_o.toarray())
     return t_data, r_data, r_hist, r_hist_t, true_prob_s, true_prob_o
 
-def get_tr_dataset(num_nodes, dataset='india', set_name='train', seq_len=10):
+def get_tr_dataset(num_nodes, dataset='india', set_name='train', seq_len=7):
     import pandas as pd
     from scipy import sparse
     if seq_len < 10:
@@ -322,110 +322,20 @@ def get_true_distributions(data, num_nodes, num_rels, dataset='india', set_name=
 Evaluation metrics
 '''
 # Label based
-def multilabel_f1beta(actual, predicted, beta=2, average='macro'): # list of lists
-    """
-    average = [None, ‘binary’ (default), ‘micro’, ‘macro’, ‘samples’, ‘weighted’]
-    https://scikit-learn.org/stable/modules/generated/sklearn.metrics.fbeta_score.html
-    """
-    m = MultiLabelBinarizer().fit(actual)
-    m_actual = m.transform(actual)
-    m_predicted = m.transform(predicted)
-    score_micro = fbeta_score(m_actual, m_predicted, average='micro', beta=beta)
-    score_macro = fbeta_score(m_actual, m_predicted, average='macro', beta=beta)
-    score_weighted = fbeta_score(m_actual, m_predicted, average='weighted', beta=beta)
-    score_samples = fbeta_score(m_actual, m_predicted, average='samples', beta=beta)
-    return score_micro, score_macro, score_weighted, score_samples
  
-def multilabel_f1(actual, predicted, average='macro'): # list of lists
-    """
-    average = [None, ‘binary’ (default), ‘micro’, ‘macro’, ‘samples’, ‘weighted’]
-    https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html
-    """
-    m = MultiLabelBinarizer().fit(actual)
-    m_actual = m.transform(actual)
-    m_predicted = m.transform(predicted)
-    score_micro = f1_score(m_actual, m_predicted, average='micro')
-    score_macro = f1_score(m_actual, m_predicted, average='macro')
-    score_weighted = f1_score(m_actual, m_predicted, average='weighted')
-    score_samples = f1_score(m_actual, m_predicted, average='samples')
-    return score_micro, score_macro, score_weighted, score_samples
- 
-def multilabel_recall(actual, predicted, average='macro'): # list of lists
-    """
-    average = [None, ‘binary’ (default), ‘micro’, ‘macro’, ‘samples’, ‘weighted’]
-    https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html
-    """
-    m = MultiLabelBinarizer().fit(actual)
-    m_actual = m.transform(actual)
-    m_predicted = m.transform(predicted)
-    score_micro = recall_score(m_actual, m_predicted, average='micro')
-    score_macro = recall_score(m_actual, m_predicted, average='macro')
-    score_weighted = recall_score(m_actual, m_predicted, average='weighted')
-    score_samples = recall_score(m_actual, m_predicted, average='samples')
-    return score_micro, score_macro, score_weighted, score_samples
- 
-def multilabel_precision(actual, predicted, average='macro'): # list of lists
-    """
-    average = [None, ‘binary’ (default), ‘micro’, ‘macro’, ‘samples’, ‘weighted’]
-    https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html
-    """
-    m = MultiLabelBinarizer().fit(actual)
-    m_actual = m.transform(actual)
-    m_predicted = m.transform(predicted)
-    score_micro = precision_score(m_actual, m_predicted, average='micro')
-    score_macro = precision_score(m_actual, m_predicted, average='macro')
-    score_weighted = precision_score(m_actual, m_predicted, average='weighted')
-    score_samples = precision_score(m_actual, m_predicted, average='samples')
-    return score_micro, score_macro, score_weighted, score_samples
- 
-def multilabel_hamming_loss(actual, predicted): # list of lists
-    """
-    https://scikit-learn.org/stable/modules/generated/sklearn.metrics.hamming_loss.html
-    """
-    m = MultiLabelBinarizer().fit(actual)
-    m_actual = m.transform(actual)
-    m_predicted = m.transform(predicted)
-    hloss = hamming_loss(m_actual, m_predicted)
-    return hloss
- 
- 
-def multilabel_jaccard_score(actual, predicted): # list of lists
-    """
-    https://scikit-learn.org/stable/modules/generated/sklearn.metrics.hamming_loss.html
-    """
-    m = MultiLabelBinarizer().fit(actual)
-    m_actual = m.transform(actual)
-    m_predicted = m.transform(predicted)
-    score_micro = jaccard_score(m_actual, m_predicted, average='micro')
-    score_macro = jaccard_score(m_actual, m_predicted, average='macro')
-    score_weighted = jaccard_score(m_actual, m_predicted, average='weighted')
-    score_samples = jaccard_score(m_actual, m_predicted, average='samples')
-    return score_micro, score_macro, score_weighted, score_samples
- 
-
-def print_eval_metrics2(true_rank_l, prob_rank_l, prt=True):
-    # a1, a2, a3, a4 = multilabel_jaccard_score(true_rank_l, prob_rank_l)
-    # accuracy = [a1, a2, a3, a4]
-    # print("Acc micro: {:.4f} | macro: {:.4f} | weighted: {:.4f} | sample: {:.4f}".format(
-    #         a1, a2, a3, a4))
-    
-    # b1, b2, b3, b4 = multilabel_precision(true_rank_l, prob_rank_l)
-    # precision = [b1, b2, b3, b4]
-    # print("Prec micro: {:.4f} | macro: {:.4f} | weighted: {:.4f} | sample: {:.4f}".format(
-    #         b1, b2, b3, b4))
-    
-    c1, c2, c3, c4 = multilabel_recall(true_rank_l, prob_rank_l)
-    recall = [c1, c2, c3, c4]
-    d1, d2, d3, d4 = multilabel_f1(true_rank_l, prob_rank_l)
-    f1 = [d1, d2, d3, d4]
+def print_eval_metrics(true_rank_l, prob_rank_l, prt=True):
+    m = MultiLabelBinarizer().fit(true_rank_l)
+    m_actual = m.transform(true_rank_l)
+    m_predicted = m.transform(prob_rank_l)
+    recall = recall_score(m_actual, m_predicted, average='weighted')
+    f1 = f1_score(m_actual, m_predicted, average='weighted')
     beta=2
-    e1, e2, e3, e4 = multilabel_f1beta(true_rank_l, prob_rank_l,beta=2)
-    f2 = [e1, e2, e3, e4]
-    hloss = multilabel_hamming_loss(true_rank_l, prob_rank_l)
+    f2 = fbeta_score(m_actual, m_predicted, average='weighted', beta=beta)
+    hloss = hamming_loss(m_actual, m_predicted)
     if prt:
-        print("Rec  weighted: {:.4f}".format(c3))
-        print("F1  weighted: {:.4f}".format(d3))
-        print("F{}  weighted: {:.4f}".format(beta,e3))
+        print("Rec  weighted: {:.4f}".format(recall))
+        print("F1  weighted: {:.4f}".format(f1))
+        print("F{}  weighted: {:.4f}".format(beta,f2))
         print("hamming loss: {:.4f}".format(hloss))
     return hloss, recall, f1, f2
 

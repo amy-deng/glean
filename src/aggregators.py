@@ -158,7 +158,7 @@ class aggregator_actor(nn.Module):
                  
                 batched_g.ndata['h'] = output[:num_nodes].view(-1, self.h_dim)
                 embeds_g_r = output[num_nodes:].view(-1, self.h_dim)
-                batched_wg.clear()
+                # batched_wg.clear()
             g_list = dgl.unbatch(batched_g)
             node_emb_temporal = np.zeros((self.num_nodes, self.seq_len, self.h_dim))
             for i in range(len(g_list)):
@@ -171,7 +171,7 @@ class aggregator_actor(nn.Module):
             if torch.cuda.is_available():
                 node_emb_temporal = node_emb_temporal.cuda()
  
-            batched_g.clear()
+            # batched_g.clear()
             embeds_split = torch.split(embeds_g_r, len_non_zero.tolist())
             embed_seq_tensor = torch.zeros(len(len_non_zero), self.seq_len, 1 * self.h_dim)
             if torch.cuda.is_available():
@@ -221,7 +221,7 @@ class aggregator_event(nn.Module):
         time_unit = times[1] - times[0]
         time_list = []
         len_non_zero = []
-        nonzero_idx = torch.nonzero(t_list).view(-1)
+        nonzero_idx = torch.nonzero(t_list, as_tuple=False).view(-1)
         t_list = t_list[nonzero_idx]  # usually no duplicates
 
         for tim in t_list:

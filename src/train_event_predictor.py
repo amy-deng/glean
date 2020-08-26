@@ -146,7 +146,7 @@ while iterations < args.runs:
             total_loss += loss.item()
     
         print('{} results'.format(set_name)) 
-        hloss, recall, f1, f2 = utils.print_eval_metrics2(true_rank_l,prob_rank_l)
+        hloss, recall, f1, f2 = utils.print_eval_metrics(true_rank_l,prob_rank_l)
         reduced_loss = total_loss / (dataset_loader.len / 1.0)
         print("{} Loss: {:.6f}".format(set_name, reduced_loss))
         return hloss, recall, f1, f2
@@ -231,10 +231,10 @@ f2_avg, f2_std = f2_list.mean(0), f2_list.std(0)
 hloss_avg, hloss_std = hloss_list.mean(0), hloss_list.std(0)
 
 print('--------------------')
-print("Rec  weighted: {:.4f}".format(recall_avg[2]))
-print("F1   weighted: {:.4f}".format(f1_avg[2]))
+print("Rec  weighted: {:.4f}".format(recall_avg))
+print("F1   weighted: {:.4f}".format(f1_avg))
 beta=2
-print("F{}  weighted: {:.4f}".format(beta, f2_avg[2]))
+print("F{}  weighted: {:.4f}".format(beta, f2_avg))
 print("hamming loss: {:.4f}".format(hloss_avg))
 
 # # save it !!! 
