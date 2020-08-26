@@ -148,7 +148,6 @@ while iterations < args.runs:
         print("{} Loss: {:.6f}".format(set_name, reduced_loss))
         return hloss, recall, f1, f2, hits, mrr, mr
 
-
     def train(data_loader, dataset_loader):
         model.train()
         total_loss = 0

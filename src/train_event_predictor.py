@@ -126,8 +126,6 @@ while iterations < args.runs:
     model.ent_map = ent_map
     model.rel_map = rel_map
 
-
-
     @torch.no_grad()
     def evaluate(data_loader, dataset_loader, set_name='valid'):
         model.eval()
