@@ -65,7 +65,7 @@ The processed datasets `AFG-example` in [Google Drive Link](https://drive.google
 
 
 ### Training and testing
-Please run following command for training and testing. We take the dataset `AFG-example` as the example.
+Please run following commands for training and testing. We take the dataset `AFG-example` as the example.
 
 **Event prediction**
 ```python
@@ -74,4 +74,27 @@ python train_event_predictor.py --runs 1 --dp ../data/ --gpu 1  -d AFG-example -
 **Actor prediction**
 ```python
 python train_actor_predictor.py --runs 1 --dp ../data/ --gpu 1  -d AFG-example --num-r 20 --seq-len 7
+```
+
+## Reference
+
+Please cite our paper if you find this code useful for your research:
+
+```
+@inproceedings{10.1145/3394486.3403209,
+author = {Deng, Songgaojun and Rangwala, Huzefa and Ning, Yue},
+title = {Dynamic Knowledge Graph Based Multi-Event Forecasting},
+year = {2020},
+isbn = {9781450379984},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3394486.3403209},
+doi = {10.1145/3394486.3403209},
+booktitle = {Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining},
+pages = {1585–1595},
+numpages = {11},
+keywords = {word graphs, knowledge graphs, multi-event forecasting},
+location = {Virtual Event, CA, USA},
+series = {KDD '20}
+}
 ```
