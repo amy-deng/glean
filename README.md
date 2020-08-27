@@ -32,6 +32,7 @@ conda install scikit-learn
 pip install pandas
 ```
 
+## Getting Started
 ### Prepare your code
 Clone this repo.
 ```bash
