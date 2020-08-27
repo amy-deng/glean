@@ -31,3 +31,21 @@ pip install tqdm
 conda install scikit-learn
 pip install pandas
 ```
+
+### Prepare your code
+Clone this repo.
+```bash
+git clone https://github.com/amy-deng/glean
+cd glean
+```
+### Prepare your data
+Download the dataset from the given link or prepare your own dataset in a similar format.
+```sh
+- glean
+	- data
+		- IND
+		- AFG
+		- your own dataset
+```
+
+### Preprocessing
