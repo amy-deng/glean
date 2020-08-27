@@ -61,7 +61,7 @@ Run the files in the `presrc` folder in the recommended order. Please check the 
 - `6_get_word_entity_map.py` get entity/event type and word mapping
 - `7_get_sub_event_dg_from_entity_g.py`,`8_get_sub_word_g_from_entity_g.py`,`9_get_scaled_tr_dataset.py` construct datasets for training the actor predictor
 
-The processed datasets `AFG-example` in [Google Drive Link](https://drive.google.com/drive/folders/1qrF1e9I8pnVlCRjb-NPiidZCu5oA0NWL?usp=sharing) can be used directly. Note that only 20 event types are randomly selected for actor prediction in this dataset.
+The processed dataset `AFG-example` in [Google Drive Link](https://drive.google.com/drive/folders/1qrF1e9I8pnVlCRjb-NPiidZCu5oA0NWL?usp=sharing) can be used directly. Note that only 20 event types are randomly selected for actor prediction in this dataset.
 
 
 ### Training and testing
