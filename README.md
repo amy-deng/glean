@@ -40,7 +40,7 @@ git clone https://github.com/amy-deng/glean
 cd glean
 ```
 ### Prepare your data
-Download the dataset from the given link or prepare your own dataset in a similar format.
+Download the dataset from the given link or prepare your own dataset in a similar format. The folder structure is as follows:
 ```sh
 - glean
 	- data
