@@ -50,3 +50,12 @@ Download the dataset from the given link or prepare your own dataset in a simila
 ```
 
 ### Preprocessing
+Run the files in the `presrc` folder in the recommended order. Please check the parameters required for each file to run. Here are some brief instructions.
+- `0_build_raw_sets.py` split the raw data into training, validation, and testing sets.
+- `1_get_digraphs.py` construct the DGL based event graph data 
+- `2_get_history.py` get historical data for training the actor predictor
+- `3_get_token_for_embedding_training.py`,`4_get_word_embedding.py` Some steps to get word embedding from the event summary. Any other method can be applied instead.
+- `5_build_word_graphs.pmi.py` get word graphs
+- `6_get_word_entity_map.py` get entity/event type and word mapping
+- `7_get_sub_event_dg_from_entity_g.py`,`8_get_sub_word_g_from_entity_g.py`,`9_get_scaled_tr_dataset.py` construct datasets for training the actor predictor
+
