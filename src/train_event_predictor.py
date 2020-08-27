@@ -3,8 +3,6 @@ def warn(*args, **kwargs):
 import warnings
 warnings.warn = warn
 
-from torch.utils.data import DataLoader
-import torch
 import argparse
 import numpy as np
 import time
@@ -15,16 +13,19 @@ from models import *
 from data import *
 import pickle
 from tqdm import tqdm
-
-parser = argparse.ArgumentParser(description='Global word and entity graphs')
+import torch
+from torch.utils.data import DataLoader
+ 
+parser = argparse.ArgumentParser(description='')
+parser.add_argument("--dp", type=str, default="../data/", help="data path")
 parser.add_argument("--dropout", type=float, default=0.5, help="dropout probability")
 parser.add_argument("--n-hidden", type=int, default=100, help="number of hidden units")
 parser.add_argument("--gpu", type=int, default=0, help="gpu")
 parser.add_argument("--lr", type=float, default=1e-3, help="learning rate")
 parser.add_argument("--weight_decay", type=float, default=1e-5, help="weight_decay")
-parser.add_argument("-d", "--dataset", type=str, default='india', help="dataset to use")
+parser.add_argument("-d", "--dataset", type=str, default='AFG', help="dataset to use")
 parser.add_argument("--grad-norm", type=float, default=1.0, help="norm to clip gradient to")
-parser.add_argument("--max-epochs", type=int, default=50, help="maximum epochs")
+parser.add_argument("--max-epochs", type=int, default=20, help="maximum epochs")
 parser.add_argument("--seq-len", type=int, default=7)
 parser.add_argument("--batch-size", type=int, default=16)
 parser.add_argument("--rnn-layers", type=int, default=1)
@@ -37,6 +38,7 @@ parser.add_argument("--runs", type=int, default=5, help='number of runs')
 
 args = parser.parse_args()
 print(args)
+
 os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
 use_cuda = args.gpu >= 0 and torch.cuda.is_available()
 print("cuda",use_cuda)
@@ -52,24 +54,24 @@ hloss_list = []
 iterations = 0 
 while iterations < args.runs:
     iterations += 1
-    print('****************** iterations ',iterations)
+    print('****************** iterations ',iterations,)
     
     if iterations == 1:
         print("loading data...")
         num_nodes, num_rels = utils.get_total_number(
-            '../data/' + args.dataset, 'stat.txt')
+            args.dp + args.dataset, 'stat.txt')
 
-        with open('../data/{}/100.w_emb'.format(args.dataset), 'rb') as f:
+        with open('{}{}/100.w_emb'.format(args.dp, args.dataset), 'rb') as f:
             word_embeds = pickle.load(f,encoding="latin1")
         word_embeds = torch.FloatTensor(word_embeds)
         vocab_size = word_embeds.size(0)
 
         train_dataset_loader = DistData(
-            args.dataset, num_nodes, num_rels, set_name='train')
+            args.dp, args.dataset, num_nodes, num_rels, set_name='train')
         valid_dataset_loader = DistData(
-            args.dataset, num_nodes, num_rels, set_name='valid')
+            args.dp, args.dataset, num_nodes, num_rels, set_name='valid')
         test_dataset_loader = DistData(
-            args.dataset, num_nodes, num_rels, set_name='test')
+            args.dp, args.dataset, num_nodes, num_rels, set_name='test')
 
         train_loader = DataLoader(train_dataset_loader, batch_size=args.batch_size,
                                 shuffle=True, collate_fn=collate_4)
@@ -78,16 +80,16 @@ while iterations < args.runs:
         test_loader = DataLoader(test_dataset_loader, batch_size=1,
                                 shuffle=False, collate_fn=collate_4)
 
-        with open('../data/' + args.dataset+'/dg_dict.txt', 'rb') as f:
+        with open(args.dp + args.dataset+'/dg_dict.txt', 'rb') as f:
             graph_dict = pickle.load(f)
         print('load dg_dict.txt')
-        with open('../data/' + args.dataset+'/wg_dict_truncated2.txt', 'rb') as f:
+        with open(args.dp + args.dataset+'/wg_dict_truncated.txt', 'rb') as f:
             word_graph_dict = pickle.load(f)
-        print('load wg_dict_truncated2.txt')
-        with open('../data/' + args.dataset+'/word_relation_map.txt', 'rb') as f:
+        print('load wg_dict_truncated.txt')
+        with open(args.dp+ args.dataset+'/word_relation_map.txt', 'rb') as f:
             rel_map = pickle.load(f)
         print('load word_relation_map.txt')
-        with open('../data/' + args.dataset+'/word_entity_map.txt', 'rb') as f:
+        with open(args.dp + args.dataset+'/word_entity_map.txt', 'rb') as f:
             ent_map = pickle.load(f)
         print('load word_entity_map.txt')
     
@@ -98,8 +100,6 @@ while iterations < args.runs:
                             maxpool=args.maxpool,
                             use_gru=args.use_gru,
                             attn=args.attn) 
-
-    
 
     model_name = model.__class__.__name__
     print('Model:', model_name)

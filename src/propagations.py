@@ -28,8 +28,6 @@ class GCNLayer(nn.Module):
 
     def forward(self, g, feature):
         def gcn_msg(edge):
-            # msg = edge.src['h'] * edge.src['norm']
-            # print(type(edge.src['h']),type(edge.data['w']))
             msg = edge.src['h'] * edge.data['w'].float()
             return {'m': msg}
 
@@ -91,7 +89,7 @@ class CompGCN_dg(nn.Module):
             e_h = self.rel_linear(edges.data['e_h'])
             return {'e_h': e_h}
 
-        g.update_all(fn.v_mul_e('h', 'e_h', 'm'), fn.prod('m', 'h_o_r')) # dst * edge -> h_o_r
+        g.update_all(fn.v_mul_e('h', 'e_h', 'm'), fn.mean('m', 'h_o_r')) 
         h_o_r = self.msg_inv_linear(g.ndata['h_o_r'])
         g.ndata['h_s_r_o'] = h_o_r 
         g.update_all(fn.copy_src(src='h_s_r_o', out='m'), fn.sum(msg='m', out='h'), apply_func)

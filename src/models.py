@@ -227,7 +227,7 @@ class glean_actor(nn.Module):
         if torch.cuda.is_available():
             ranks = ranks.cuda()
         for sub_idx in nonzero_sub_idx:
-            rank = (prob_sub_idx == sub_idx).nonzero().view(-1)
+            rank = (prob_sub_idx == sub_idx).nonzero(as_tuple=False).view(-1)
             ranks = torch.cat((ranks, rank))
 
         ## o
@@ -241,7 +241,7 @@ class glean_actor(nn.Module):
         nonzero_prob_ob_idx = prob_ob_idx[:len(nonzero_prob_idx)]
 
         for ob_idx in nonzero_ob_idx:
-            rank = (prob_ob_idx == ob_idx).nonzero().view(-1)
+            rank = (prob_ob_idx == ob_idx).nonzero(as_tuple=False).view(-1)
             ranks = torch.cat((ranks, rank))
         
         return nonzero_true_sub_idx, nonzero_prob_sub_idx, nonzero_true_ob_idx, nonzero_prob_ob_idx, ranks, loss

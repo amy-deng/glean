@@ -3,8 +3,6 @@ def warn(*args, **kwargs):
 import warnings
 warnings.warn = warn
 
-from torch.utils.data import DataLoader
-import torch
 import argparse
 import numpy as np
 import time
@@ -15,18 +13,21 @@ from models import *
 from data import *
 import pickle
 from tqdm import tqdm
+from torch.utils.data import DataLoader
+import torch
 
-parser = argparse.ArgumentParser(description='Global word and entity graphs')
+parser = argparse.ArgumentParser(description='Utilize global information of word and entity graphs')
+parser.add_argument("--dp", type=str, default="../data/", help="data path")
 parser.add_argument("--dropout", type=float, default=0.5, help="dropout probability")
 parser.add_argument("--n-hidden", type=int, default=100, help="number of hidden units")
 parser.add_argument("--gpu", type=int, default=0, help="gpu")
 parser.add_argument("--lr", type=float, default=1e-3, help="learning rate")
 parser.add_argument("--weight_decay", type=float, default=1e-5, help="weight_decay")
-parser.add_argument("-d", "--dataset", type=str, default='india', help="dataset to use")
+parser.add_argument("-d", "--dataset", type=str, default='AFG', help="dataset to use")
 parser.add_argument("--grad-norm", type=float, default=1.0, help="norm to clip gradient to")
 parser.add_argument("--max-epochs", type=int, default=10, help="maximum epochs")
 parser.add_argument("--seq-len", type=int, default=7)
-parser.add_argument("--num-r", type=int, default=50, help="number of rel to consider")
+parser.add_argument("--num-r", type=int, default=20, help="number of rel to consider")
 parser.add_argument("-b","--batch-size", type=int, default=1)
 parser.add_argument("--rnn-layers", type=int, default=1)
 parser.add_argument("--maxpool", type=int, default=1)
@@ -57,34 +58,34 @@ while iterations < args.runs:
     if iterations == 1:
         # loading data...
         num_nodes, num_rels = utils.get_total_number(
-            '../data/' + args.dataset, 'stat.txt')
+            args.dp + args.dataset, 'stat.txt')
 
-        with open('../data/{}/100.w_emb'.format(args.dataset), 'rb') as f:
+        with open('{}{}/100.w_emb'.format(args.dp, args.dataset), 'rb') as f:
             word_embeds = pickle.load(f,encoding="latin1")
         word_embeds = torch.FloatTensor(word_embeds)
         vocab_size = word_embeds.size(0)
 
-        train_dataset_loader = EntDistGivenTRData(args.dataset, num_nodes, num_rels, 'train', args.seq_len, num_r=args.num_r)
-        valid_dataset_loader = EntDistGivenTRData(args.dataset, num_nodes, num_rels, 'valid', args.seq_len, num_r=args.num_r)
-        test_dataset_loader = EntDistGivenTRData(args.dataset, num_nodes, num_rels, 'test', args.seq_len, num_r=args.num_r)
+        train_dataset_loader = EntDistGivenTRData(args.dp, args.dataset, num_nodes, num_rels, 'train', args.seq_len, num_r=args.num_r)
+        valid_dataset_loader = EntDistGivenTRData(args.dp, args.dataset, num_nodes, num_rels, 'valid', args.seq_len, num_r=args.num_r)
+        test_dataset_loader = EntDistGivenTRData(args.dp, args.dataset, num_nodes, num_rels, 'test', args.seq_len, num_r=args.num_r)
         train_loader = DataLoader(train_dataset_loader, batch_size=args.batch_size, shuffle=True, collate_fn=collate_6)
         valid_loader = DataLoader(valid_dataset_loader, batch_size=1, shuffle=False, collate_fn=collate_6)
         test_loader = DataLoader(test_dataset_loader, batch_size=1, shuffle=False, collate_fn=collate_6)
 
         try:
-            with open('../data/' + args.dataset+'/wg_r_dict_sl{}_rand_{}.txt'.format(args.seq_len, args.num_r), 'rb') as f:
+            with open(args.dp  + args.dataset+'/wg_r_dict_sl{}_rand_{}.txt'.format(args.seq_len, args.num_r), 'rb') as f:
                 word_graph_dict = pickle.load(f)
-            with open('../data/' + args.dataset+'/dg_r_dict_sl{}_rand_{}.txt'.format(args.seq_len, args.num_r), 'rb') as f:
+            with open(args.dp  + args.dataset+'/dg_r_dict_sl{}_rand_{}.txt'.format(args.seq_len, args.num_r), 'rb') as f:
                 graph_dict = pickle.load(f)
         except:
             print('Cannot find the dataset')
             exit()
              
         # load word_relation_map.txt
-        with open('../data/' + args.dataset+'/word_relation_map.txt', 'rb') as f:
+        with open(args.dp  + args.dataset+'/word_relation_map.txt', 'rb') as f:
             rel_map = pickle.load(f)
         # load word_entity_map.txt
-        with open('../data/' + args.dataset+'/word_entity_map.txt', 'rb') as f:
+        with open(args.dp  + args.dataset+'/word_entity_map.txt', 'rb') as f:
             ent_map = pickle.load(f)
     
     model = glean_actor(h_dim=args.n_hidden, num_ents=num_nodes,   

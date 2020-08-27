@@ -8,9 +8,9 @@ import collections
  
 # empirical distribution/counts s/r/o in one day, predict r
 class DistData(data.Dataset):
-      def __init__(self, dataset, num_nodes, num_rels, set_name):
-            data, times = utils.load_quadruples('../data/' + dataset, set_name + '.txt')
-            true_prob_s, true_prob_r, true_prob_o = utils.get_true_distributions(data, num_nodes, num_rels, dataset, set_name)
+      def __init__(self, path, dataset, num_nodes, num_rels, set_name):
+            data, times = utils.load_quadruples(path + dataset, set_name + '.txt')
+            true_prob_s, true_prob_r, true_prob_o = utils.get_true_distributions(path, data, num_nodes, num_rels, dataset, set_name)
             times = torch.from_numpy(times)
             self.len = len(times)
             if torch.cuda.is_available():
@@ -33,11 +33,12 @@ class DistData(data.Dataset):
  
 # predict s/o given r and t
 class EntDistGivenTRData(data.Dataset):
-      def __init__(self, dataset, num_nodes, num_rels, set_name, seq_len, num_r=None):
+      def __init__(self, path, dataset, num_nodes, num_rels, set_name, seq_len, num_r=None):
             if num_r:
-                  t_data, r_data, r_hist, r_hist_t, true_prob_s, true_prob_o = utils.get_scaled_tr_dataset(num_nodes, dataset, set_name, seq_len, num_r)
+                  t_data, r_data, r_hist, r_hist_t, true_prob_s, true_prob_o = utils.get_scaled_tr_dataset(num_nodes, path, dataset, set_name, seq_len, num_r)
             else:
-                  t_data, r_data, r_hist, r_hist_t, true_prob_s, true_prob_o = utils.get_tr_dataset(num_nodes, dataset, set_name, seq_len)
+                  print("The complete data set (considering all event types(r)) might be too large to be trained") 
+                  exit()                 
             
             self.len = len(t_data)
             if torch.cuda.is_available():

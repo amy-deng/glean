@@ -23,7 +23,7 @@ def get_data_with_t(data, time):
     triples = [[quad[0], quad[1], quad[2]] for quad in data if quad[3] == time]
     return np.array(triples)
 
- 
+
 def get_data_idx_with_t_r(data, t,r):
     for i, quad in enumerate(data):
         if quad[3] == t and quad[1] == r:
@@ -167,10 +167,10 @@ def soft_cross_entropy(pred, soft_targets):
 '''
 Generate/get (r,t,s_count, o_count) datasets 
 '''
-def get_scaled_tr_dataset(num_nodes, dataset='india', set_name='train', seq_len=7, num_r=None):
+def get_scaled_tr_dataset(num_nodes, path='../data/', dataset='india', set_name='train', seq_len=7, num_r=None):
     import pandas as pd
     from scipy import sparse
-    file_path = '../data/{}/tr_data_{}_sl{}_rand_{}.npy'.format(dataset, set_name, seq_len, num_r)
+    file_path = '{}{}/tr_data_{}_sl{}_rand_{}.npy'.format(path, dataset, set_name, seq_len, num_r)
     if not os.path.exists(file_path):
         print(file_path,'not exists STOP for now')
         exit()
@@ -183,95 +183,14 @@ def get_scaled_tr_dataset(num_nodes, dataset='india', set_name='train', seq_len=
     true_prob_s = torch.from_numpy(true_prob_s.toarray())
     true_prob_o = torch.from_numpy(true_prob_o.toarray())
     return t_data, r_data, r_hist, r_hist_t, true_prob_s, true_prob_o
-
-def get_tr_dataset(num_nodes, dataset='india', set_name='train', seq_len=7):
-    import pandas as pd
-    from scipy import sparse
-    if seq_len < 10:
-        file_path = '../data/{}/tr_data_{}_sl{}.npy'.format(dataset, set_name, seq_len)
-        print(file_path,'new')
-    else:
-        file_path = '../data/{}/tr_data_{}.npy'.format(dataset, set_name)
-    if not os.path.exists(file_path):
-        print('build tr_data ...',dataset,set_name)
-        data, times = load_quadruples('../data/' + dataset, set_name + '.txt') # triplets
-        if seq_len < 10:
-            filename = '../data/{}/{}_history_rel_{}.txt'.format(dataset, set_name, seq_len)
-            print(filename,'read')
-            with open('../data/{}/{}_history_rel_{}.txt'.format(dataset, set_name, seq_len), 'rb') as f: # r history data
-                r_history_data = pickle.load(f)
-        else:
-            with open('../data/{}/{}_history_rel.txt'.format(dataset, set_name), 'rb') as f: # r history data
-                r_history_data = pickle.load(f)
-        hist_r, hist_r_t = r_history_data[0], r_history_data[1]
-
-        df = pd.DataFrame(data=data, columns=['s','r','o','t'])  
-        trdf = df.groupby(['t','r']).size().reset_index().rename(columns={0:'count'})
-        t_data = []
-        r_data = []
-        true_prob_s = None
-        true_prob_o = None  
-        r_hist = []
-        r_hist_t = []
-        for i,row in trdf.iterrows():
-            if i % 500 == 0:
-                print(i)
-            if row['t'] == 0 or row['t'] == 1096 : # do not train samples of t=0, r history data can be empty
-                continue
-            idx = get_data_idx_with_t_r(data, row['t'], row['r']) # shouldn't return None
-            cur_hist_r = hist_r[idx]
-            cur_hist_r_t = hist_r_t[idx]
-            ## if len(cur_hist_r_t)  < 2: # history data less than 2
-            ##     continue
-            t_data.append(row['t'])
-            r_data.append(row['r'])
-            r_hist.append(cur_hist_r)
-            r_hist_t.append(cur_hist_r_t)
-
-            sodf = df.loc[(df['r']==row['r']) & (df['t']==row['t'])][['s','o']]
-            true_s = np.zeros(num_nodes)
-            true_o = np.zeros(num_nodes)
-            so_arr = sodf.values
-            for s in so_arr[:,0]:
-                true_s[s] += 1
-            for o in so_arr[:,1]:
-                true_o[o] += 1
-
-            true_s = true_s / np.sum(true_s)
-            true_o = true_o / np.sum(true_o)
-            if true_prob_s is None:
-                true_prob_s = true_s.reshape(1, num_nodes)
-                true_prob_o = true_o.reshape(1, num_nodes)
-            else:                
-                true_prob_s = np.concatenate((true_prob_s, true_s.reshape(1, num_nodes)), axis=0)
-                true_prob_o = np.concatenate((true_prob_o, true_o.reshape(1, num_nodes)), axis=0)
-            # if i ==500 :
-            #     break
-        t_data = np.array(t_data)
-        r_data = np.array(r_data)
-        true_prob_s = sparse.csr_matrix(true_prob_s)
-        true_prob_o = sparse.csr_matrix(true_prob_o)
-        with open(file_path, 'wb') as fp:
-            pickle.dump([t_data, r_data, r_hist, r_hist_t, true_prob_s, true_prob_o], fp)
-    else:
-        print('load tr_data ...',dataset,set_name)
-        with open(file_path, 'rb') as f:
-            [t_data, r_data, r_hist, r_hist_t, true_prob_s, true_prob_o] = pickle.load(f)
-    t_data = torch.from_numpy(t_data)
-    r_data = torch.from_numpy(r_data)
-    true_prob_s = torch.from_numpy(true_prob_s.toarray())
-    true_prob_o = torch.from_numpy(true_prob_o.toarray())
-    return t_data, r_data, r_hist, r_hist_t, true_prob_s, true_prob_o
-
  
-
 '''
 Empirical distribution
 '''
-def get_true_distributions(data, num_nodes, num_rels, dataset='india', set_name='train'):
+def get_true_distributions(path, data, num_nodes, num_rels, dataset='india', set_name='train'):
     """ (# of s-related triples) / (total # of triples) """
      
-    file_path = '../data/{}/true_probs_{}.npy'.format(dataset, set_name)
+    file_path = '{}{}/true_probs_{}.npy'.format(path, dataset, set_name)
     if not os.path.exists(file_path):
         print('build true distributions...',dataset,set_name)
         time_l = list(set(data[:,-1]))
