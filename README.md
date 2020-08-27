@@ -47,6 +47,8 @@ Download the dataset from the given link or prepare your own dataset in a simila
 		- IND
 		- AFG
 		- your own dataset
+	- src
+	- presrc
 ```
 
 ### Preprocessing
@@ -64,11 +66,12 @@ The processed datasets `AFG-example` in [Google Drive Link](https://drive.google
 
 ### Training and testing
 Please run following command for training and testing. We take the dataset `AFG-example` as the example.
-Event prediction
+
+**Event prediction**
 ```python
 python train_event_predictor.py --runs 1 --dp ../data/ --gpu 1  -d AFG-example --seq-len 7
 ```
-Actor prediction
+**Actor prediction**
 ```python
 python train_actor_predictor.py --runs 1 --dp ../data/ --gpu 1  -d AFG-example --num-r 20 --seq-len 7
 ```
