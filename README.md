@@ -6,7 +6,7 @@ This is the source code for paper [Dynamic Knowledge Graph based Multi-Event For
 
 
 ## Data
-We processed five country based datasets from the ICEWS data. Please find the datasets in this [Google Drive Link](https://drive.google.com/drive/folders/1qrF1e9I8pnVlCRjb-NPiidZCu5oA0NWL?usp=sharing). The dataset folder (e.g., `IND`) can be placed in the folder `data`. A brief introduction of the data file is as follows:
+We processed some country based datasets from the ICEWS data. Please find the datasets in this [Google Drive Link](https://drive.google.com/drive/folders/1qrF1e9I8pnVlCRjb-NPiidZCu5oA0NWL?usp=sharing). The dataset folder (e.g., `AFG`) can be placed in the folder `data`. A brief introduction of the data file is as follows:
 - `quadruple.txt` includes the structured event information ordered by time.
 - `text.txt` event summary file, where each row corresponds to the event in `quadruple.txt`
 - `stat.txt` includes the number of entities and event types.
@@ -15,7 +15,7 @@ We processed five country based datasets from the ICEWS data. Please find the da
 - `quadruple_id.txt` events represented by the index.
 
 ## Prerequisites
-The code has been successfully tested in the following environment. (Older dgl versions may need to modify the code)
+The code has been successfully tested in the following environment. (For older dgl versions, you may need to modify the code)
 - Python 3.7.7
 - PyTorch 1.6.0
 - dgl 0.5.0
@@ -44,7 +44,7 @@ Download the dataset from the given link or prepare your own dataset in a simila
 ```sh
 - glean
 	- data
-		- IND
+		- NGA
 		- AFG
 		- your own dataset
 	- src
