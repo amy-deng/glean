@@ -22,7 +22,7 @@ The code has been successfully tested in the following environment.
 - Sklearn 0.23.2
 - Pandas 1.1.1
 
-Example commands executed to build the environment (Note: we use Ubuntu with Cuda 9.2)
+Example commands executed to build a conda environment (Note: we use Ubuntu with Cuda 9.2)
 ```sh
 conda create --name glean python=3.7
 conda install pytorch torchvision cudatoolkit=9.2 -c pytorch
