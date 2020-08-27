@@ -15,7 +15,7 @@ We processed five country based datasets from the ICEWS data. Please find the da
 - `quadruple_id.txt` events represented by the index.
 
 ## Prerequisites
-The code has been successfully tested in the following environment.
+The code has been successfully tested in the following environment. (Older dgl versions may need to modify the code)
 - Python 3.7.7
 - PyTorch 1.6.0
 - dgl 0.5.0
