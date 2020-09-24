@@ -6,7 +6,7 @@ This is the source code for paper [Dynamic Knowledge Graph based Multi-Event For
 
 
 ## Data
-We processed some country based datasets from the ICEWS data. Please find the datasets in this [Google Drive Link](https://drive.google.com/drive/folders/1qrF1e9I8pnVlCRjb-NPiidZCu5oA0NWL?usp=sharing). The dataset folder (e.g., `AFG`) can be placed in the folder `data`. A brief introduction of the data file is as follows:
+We processed some country based datasets from the ICEWS data. Please find an example dataset (partial events are kept.) in this [Google Drive Link](https://drive.google.com/drive/folders/1qrF1e9I8pnVlCRjb-NPiidZCu5oA0NWL?usp=sharing). The dataset folder (e.g., `AFG-raw-part`) can be placed in the folder `data`. A brief introduction of the data file is as follows:
 - `quadruple.txt` includes the structured event information ordered by time.
 - `text.txt` event summary file, where each row corresponds to the event in `quadruple.txt`
 - `stat.txt` includes the number of entities and event types.
