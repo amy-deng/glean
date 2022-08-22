@@ -6,7 +6,7 @@ This is the source code for paper [Dynamic Knowledge Graph based Multi-Event For
 
 
 ## Data
-We processed some country based datasets from the ICEWS data. Please find an example dataset (partial events are kept.) in this [Google Drive Link](https://drive.google.com/drive/folders/1qrF1e9I8pnVlCRjb-NPiidZCu5oA0NWL?usp=sharing). The dataset folder (e.g., `AFG-raw-part`) can be placed in the folder `data`. A brief introduction of the data file is as follows:
+We processed some country based datasets from the ICEWS data. Please find an example dataset (partial events are kept.) in this [Google Drive Link](https://drive.google.com/drive/folders/17cNfLmOLSmZ-qml7zaYETTt3apd2A1HN?usp=sharing). The dataset folder (e.g., `AFG-raw-part`) can be placed in the folder `data`. A brief introduction of the data file is as follows:
 - `quadruple.txt` includes the structured event information ordered by time.
 - `text.txt` event summary file, where each row corresponds to the event in `quadruple.txt`
 - `stat.txt` includes the number of entities and event types.
@@ -61,7 +61,7 @@ Run the files in the `presrc` folder in the recommended order. Please check the 
 - `6_get_word_entity_map.py` get entity/event type and word mapping
 - `7_get_sub_event_dg_from_entity_g.py`,`8_get_sub_word_g_from_entity_g.py`,`9_get_scaled_tr_dataset.py` construct datasets for training the actor predictor
 
-The processed dataset `AFG-example` in [Google Drive Link](https://drive.google.com/drive/folders/1qrF1e9I8pnVlCRjb-NPiidZCu5oA0NWL?usp=sharing) can be used directly. Note that only 20 event types are randomly selected for actor prediction in this dataset.
+The processed dataset `AFG-example` in [Google Drive Link](https://drive.google.com/drive/folders/1tTsI2RkLg-EaN9p7_owou9F1QaKktDuS?usp=sharing) can be used directly. Note that only 20 event types are randomly selected for actor prediction in this dataset.
 
 
 ### Training and testing
